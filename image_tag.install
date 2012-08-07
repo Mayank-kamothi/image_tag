@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the ImageTag module.
+ * @author Mayank kamothi <mayank_it@yahaoo.com>
+ */
+
+
+/**
+ * Implements of hook_install().
+ */
+function image_tag_install() {
+  // Set weight to 100 to make sure this module is the last one called on hooks.
+  /* Create images style when module install*/
+  $style = image_style_save(array('name' => 'tag'));
+  $effect = array(
+    'name' => 'image_resize',
+    'data' => array(
+      'width' => 650,
+      'height' => 500,
+    ),
+    'isid' => $style['isid'],
+  );
+  image_effect_save($effect);
+
+  db_update('system')
+    ->fields(array('weight' => 10))
+    ->condition('name', 'image_tag')
+    ->execute();
+}
+
+/**
+ * Implements of hook_uninstall().
+ */
+function image_tag_uninstall() {
+  // Remove variables created by image_tag.
+  /* Remove images style when module install*/
+  image_style_delete(image_style_load('tag'));
+  db_delete('variable')
+    ->condition('name', 'image_tag\_%', 'LIKE');
+}
+
+/**
+ * Implements of hook_schema.
+ *
+ * Defines the database schema for module "Multistep Nodeform".
+ */
+function image_tag_schema() {
+  $schema['image_tag'] = array(
+    'description' => t('Table that contains image tag entry for particular images of node.'),
+    'fields' => array(
+      'tag_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'length' => 32,
+        'description' => 'The tag id.',
+      ),
+      'tag_width' => array(
+        'type' => 'int',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Width of the tag.',
+      ),
+      'tag_height' => array(
+        'type' => 'int',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Height of tag.',
+      ),
+      'tag_top' => array(
+        'type' => 'int',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Top position of the tag.',
+      ),
+      'tag_left' => array(
+        'type' => 'int',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Left position of tag.',
+        ),
+      'tag_nid' => array(
+        'type' => 'int',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Node id for tag.',
+        ),
+      'tag_fid' => array(
+        'type' => 'int',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Image file id.',
+        ),
+      'tag_label' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('tag_id'),
+  );
+  return $schema;
+}
