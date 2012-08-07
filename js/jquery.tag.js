@@ -81,6 +81,7 @@ var $ = jQuery.noConflict();
 							$(this).css("opacity",1);
               if(options.canDelete){
                 $(".jTagDeleteTag",this).show();
+                $(".jTagArrow",this).show();
               }
 							$(this).find("span").show();
 							obj.disableClickToTag();
@@ -93,6 +94,7 @@ var $ = jQuery.noConflict();
 								$(this).css("opacity",0);
                 if(options.canDelete){
                   $(".jTagDeleteTag",this).hide();
+                  $(".jTagArrow",this).hide();
                 }
 								$(this).find("span").hide();
 							}
@@ -106,6 +108,7 @@ var $ = jQuery.noConflict();
 							$("#"+$(this).attr('rel'),container).css('opacity',1).find("span").show();
               if(options.canDelete){
                 $(".jTagDeleteTag",container).show();
+                $(".jTagArrow",container).show();
               }
 						});
 						
@@ -113,6 +116,7 @@ var $ = jQuery.noConflict();
 							$("#"+$(this).attr('rel'),container).css('opacity',0).find("span").hide();
               if(options.canDelete){
                 $(".jTagDeleteTag",container).hide();
+                $(".jTagArrow",container).hide();
               }
 
 						});
@@ -334,7 +338,7 @@ var $ = jQuery.noConflict();
 			var options = obj.data('options');
 			var count = $(".jTagTag").length+1;
 
-			tag = $('<div class="jTagTag" id="tag'+count+'"style="width:'+width+'px;height:'+height+'px;top:'+top_pos+'px;left:'+left+'px;"><div style="width:100%;height:100%"><div class="jTagDeleteTag"></div><span>'+label+'</span></div></div>')
+			tag = $('<div class="jTagTag" id="tag'+count+'"style="width:'+width+'px;height:'+height+'px;top:'+top_pos+'px;left:'+left+'px;"><div style="width:100%;height:100%"><div class="jTagDeleteTag"></div><div class="jTagArrow"></div><span>'+label+'</span></div></div>')
 						.appendTo(obj.prev());
 
 			if(id){
@@ -343,6 +347,7 @@ var $ = jQuery.noConflict();
 
 			if(options.canDelete){
 				obj.parent().find(".jTagDeleteTag").show();
+        obj.parent().find(".jTagArrow").show();
 			}
 
 			if(options.showTag == "always"){

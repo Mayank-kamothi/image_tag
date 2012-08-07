@@ -10,11 +10,11 @@ Install
 
 3. Navigate to the admin page of the content type for which you want to have an imagetag (admin/content/node-type/YOUR_CONTENT_TYPE):
 
-   a. Add cck image field for that content type
-   
-   b. Go to the "Manage Display fields" sub section
-   
-   c. select the widget for handling display of the image: set the image style to "tag" one.
+  a. Add cck image field for that content type
+
+  b. Go to the "Manage Display fields" sub section
+
+  c. select the widget for handling display of the image: set the image style to "tag" one.
 
 4. Now Add this below function to your current theme template.php file and replace <THEME_NAME> to your theme name.
 
