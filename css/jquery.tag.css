@@ -85,7 +85,7 @@
   height: 20px;
   background: url('../images/cancel.png') no-repeat;
   top: 109px;
-  left: 125px;
+  left: 102px;
 }
 
 /* Tag
@@ -97,7 +97,7 @@
 }
 
 .jTagTag span{
-  width:172%;
+  width:134%;
   background-color: #FFFFFF;
   color:#000;
   height:20px;
@@ -108,7 +108,7 @@
   font-weight: bold;
   line-height:20px;
   top:107px;
-  margin-left: -30px
+  margin-left: -16px
 }
 
 /* Tag Lables
