@@ -4,7 +4,6 @@
  * Basically, if it's on the /ImageTag, it's probably here.
  * @author Mayank-kamothi <mayank_it@yahoo.com>
  */
-var parentWidth;
 (function($) {
 Drupal.behaviors.tagBehavior = {
   attach: function (context, settings) {
