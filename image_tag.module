@@ -73,7 +73,9 @@ function image_tag_all() {
       $query->fields('it'); // SELECT the fields from file_usage
       $query->condition('it.tag_nid', $nid, '=');
       $query->condition('it.tag_fid', $fid, '=');
-      $query->condition('it.tag_user_id', $user->uid, '=');
+      if ($user->uid) {
+        $query->condition('it.tag_user_id', $user->uid, '=');
+      }
       $result = $query->execute();
       // Display all tag on image.
       // Loop through all fields searching for image tag and display.
