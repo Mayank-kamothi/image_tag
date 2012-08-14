@@ -8,6 +8,11 @@
 Drupal.behaviors.tagBehavior = {
   attach: function (context, settings) {
   //code starts
+   $("#edit-search-block-form--2").autocomplete("?q=all_users", {
+    selectFirst: true
+  });
+  
+  
   if($(".tag").length !=0)
   {
     $(".tag").tag({

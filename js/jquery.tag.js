@@ -211,11 +211,25 @@ var $ = jQuery.noConflict();
       if(options.showTag == 'always'){
         $(".jTagTag",overlay).hide();
       }
+
       /*User Permission set here*/
       if(Drupal.settings.image_tag.user_permission == 'true') {
-        $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
+        $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
         overlay.addClass("jTagPngOverlay");
       }
+
+      /*  Autocomplete Tag Textfield By: Mayank  */
+      /*  Code Start  */
+
+      $.getJSON("?q=all_users", function(data) {
+        $("input#jTagLabel").autocomplete({
+            dataType: "json",
+            source: data,
+            minLength: 1,
+        });
+      });
+
+      /*  Code End  */
 
       jtagdrag = $(".jTagDrag",overlay);
 

@@ -12,11 +12,12 @@
  */
 
 function image_tag_init() {
+  drupal_add_js(drupal_get_path('module', 'image_tag') . '/js/jquery.autocomplete.js');
   drupal_add_js(drupal_get_path('module', 'image_tag') . '/js/image_tag.js');
   drupal_add_css(drupal_get_path('module', 'image_tag') . '/css/jquery.tag.css');
   drupal_add_css(drupal_get_path('module', 'image_tag') . '/css/jquery-ui.custom.css');
   if (user_access('access image_tag')) {
-    $permission_variable = array('user_permission' => 'true'); 
+    $permission_variable = array('user_permission' => 'true');
     drupal_add_js(array('image_tag' => $permission_variable), 'setting');
   }
   drupal_add_js(drupal_get_path('module', 'image_tag') . '/js/jquery.tag.js');
@@ -38,6 +39,12 @@ function image_tag_menu() {
   $items['image_tag_all'] = array(
   'title' => 'image_tag_all',
   'page callback' => 'image_tag_all',
+  'access arguments' => array('access content'),
+  'type' => MENU_CALLBACK,
+  );
+  $items['all_users'] = array(
+  'title' => 'image_tag_users_all',
+  'page callback' => 'image_tag_users_all',
   'access arguments' => array('access content'),
   'type' => MENU_CALLBACK,
   );
@@ -67,13 +74,14 @@ function image_tag_all() {
   if (user_access('access image_tag')) {
     $permission_variable = 'true';
   }
-  if($_REQUEST['action'] == 'list') {
+  if ($_REQUEST['action'] == 'list') {
     $tags = array();
     $query = db_select('image_tag', 'it');
       $query->fields('it'); // SELECT the fields from file_usage
       $query->condition('it.tag_nid', $nid, '=');
       $query->condition('it.tag_fid', $fid, '=');
-      $query->condition('it.tag_user_id', $user->uid, '=');
+      if ($user->uid)
+        $query->condition('it.tag_user_id', $user->uid, '=');
       $result = $query->execute();
       // Display all tag on image.
       // Loop through all fields searching for image tag and display.
@@ -99,13 +107,14 @@ function image_tag_save() {
   $imageData = image_tag_image_nodeId_fid($_REQUEST['imageName']);
   $nid = $imageData['id'];
   $fid = $imageData['fid'];
-  if($_REQUEST['action'] == 'delete') {
+  if ($_REQUEST['action'] == 'delete') {
     // Delete tag on image.
     $num_deleted = db_delete('image_tag')
         ->condition('tag_id', $_REQUEST['id'])
         ->condition('tag_id', $_REQUEST['id'])
         ->execute();
-  } else {
+  }
+  else {
     // Save tag on image.
     $nid = db_insert('image_tag')
     ->fields(array(
@@ -120,6 +129,24 @@ function image_tag_save() {
     ))
     ->execute();
   }
+}
+
+/**
+ * Implement for image tag list action.
+ * @author Mayank-kamothi <mayank_it@yahoo.com>
+ */
+function image_tag_users_all() {
+    $tags = array();
+    $query = db_select('users', 'u');
+      $query->fields('u'); // SELECT the fields from file_usage
+      $query->condition('u.uid', 0, '>');
+      $result = $query->execute();
+      // Display all tag on image.
+      // Loop through all fields searching for image tag and display.
+      while ($record = $result->fetchAssoc()) {
+          $tags[] = array("value" => $record['name']);
+      }
+    echo json_encode($tags);
 }
 
 /**
