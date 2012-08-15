@@ -71,29 +71,51 @@ function image_tag_all() {
   $imageData = image_tag_image_nodeId_fid($_REQUEST['imageName']);
   $nid = $imageData['id'];
   $fid = $imageData['fid'];
+
   if (user_access('access image_tag')) {
     $permission_variable = 'true';
   }
+
   if ($_REQUEST['action'] == 'list') {
     $tags = array();
+
+    $args = array('user' => $user->uid, 'approved' => TRUE);
+
+    $options = array(
+      'include_user_info' => TRUE,
+      'paging' => variable_get('user_relationships_relationships_per_page', 16),
+    );
+
+    $relationships = user_relationships_load($args, $options);
+    $user_friend[] = $user->uid;
+    foreach($relationships as $keys => $values) {
+      $user_friend[] = $values->requestee->uid;
+    }
     $query = db_select('image_tag', 'it');
       $query->fields('it'); // SELECT the fields from file_usage
       $query->condition('it.tag_nid', $nid, '=');
       $query->condition('it.tag_fid', $fid, '=');
-      if ($user->uid)
-        $query->condition('it.tag_user_id', $user->uid, '=');
       $result = $query->execute();
+
       // Display all tag on image.
       // Loop through all fields searching for image tag and display.
+      $j = 0;
       while ($record = $result->fetchAssoc()) {
           $tags[] = array("id" => $record['tag_id'],
                       "label" => t($record['tag_label']),
                       "width" => $record['tag_width'],
                       "height" => $record['tag_height'],
                       "top" => $record['tag_top'],
-                      "left" => $record['tag_left'],
-                      "permission" => $permission_variable);
+                      "left" => $record['tag_left']);
+          if (in_array($record['tag_user_id'], $user_friend)) {
+            $tags[$j]['permission'] = 'true';
+          }
+          else {
+            $tags[$j]['permission'] = 'false';
+          }
+      $j+=1;
       }
+
     echo json_encode($tags);
   }
 }
