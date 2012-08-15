@@ -73,13 +73,16 @@ var $ = jQuery.noConflict();
           if(options.autoShowDrag){
             obj.showDrag();
           }
-
+          
+            
           container.delegate('.jTagTag','mouseenter',function(){
             if($(".jTagDrag",container).length==0){
               $(this).css("opacity",1);
+
               if(options.canDelete){
                 $(".jTagDeleteTag",this).show();
                 $(".jTagArrow",this).show();
+
               }
               $(this).find("span").show();
               obj.disableClickToTag();
@@ -211,7 +214,9 @@ var $ = jQuery.noConflict();
       if(options.showTag == 'always'){
         $(".jTagTag",overlay).hide();
       }
+
       /*User Permission set here*/
+
       try {
             if(Drupal.settings.image_tag.user_permission == 'true') {
               $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
@@ -221,6 +226,18 @@ var $ = jQuery.noConflict();
       catch(err) {
         return false;
       }
+
+      /*  Autocomplete Tag Textfield By: Mayank  */
+      /*  Code Start  */
+
+      $.getJSON("?q=all_users", function(data) {
+        $("input#jTagLabel").autocomplete({
+            source: data,
+            minLength: 1
+        });
+      });
+
+      /*  Code End  */
 
       jtagdrag = $(".jTagDrag",overlay);
 
@@ -275,7 +292,10 @@ var $ = jQuery.noConflict();
       $(".jTagSaveBtn",container).click(function(){
 
         label = $("#jTagLabel",container).val();
-
+        setTimeout(function () {
+              $('div.jTagNoDeleteTag').removeClass('jTagNoDeleteTag').addClass('jTagDeleteTag');
+            }, 200);
+        
         if(label==''){
           alert('The label cannot be empty');
           return;
@@ -284,12 +304,14 @@ var $ = jQuery.noConflict();
         /*Get file name on tag save*/
         var src = obj.attr('src').split('/');
         var fileName = src[src.length - 1];
+
         imageName = fileName;
         height = $(this).parent().parent().height();
         width = $(this).parent().parent().width();
         top_pos = $(this).parent().parent().attr('offsetTop');
         left = $(this).parent().parent().attr('offsetLeft');
         tagobj = obj.addTag(width,height,top_pos,left,label);
+        
         if(options.save){
           options.save(width,height,top_pos,left,label,tagobj,imageName);
         }
