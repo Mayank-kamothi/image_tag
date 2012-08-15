@@ -213,9 +213,14 @@ var $ = jQuery.noConflict();
       }
 
       /*User Permission set here*/
-      if(Drupal.settings.image_tag.user_permission == 'true') {
-        $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
-        overlay.addClass("jTagPngOverlay");
+      try {
+            if(Drupal.settings.image_tag.user_permission == 'true') {
+              $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
+              overlay.addClass("jTagPngOverlay");
+            }
+      } 
+      catch(err) {
+        return false;
       }
 
       /*  Autocomplete Tag Textfield By: Mayank  */
