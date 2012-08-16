@@ -111,6 +111,13 @@ function image_tag_schema() {
         'length' => 255,
         'not null' => TRUE,
       ),
+      'taged_user_id' => array(
+        'type' => 'int',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'taged user id.',
+      ),
     ),
     'primary key' => array('tag_id'),
   );

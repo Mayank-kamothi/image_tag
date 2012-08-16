@@ -146,7 +146,7 @@ var $ = jQuery.noConflict();
 
           if(options.defaultTags){
             $.each(options.defaultTags, function (index,value){
-              obj.addTag(value.width,value.height,value.top,value.left,value.label,value.id);
+              obj.addTag(value.width,value.height,value.top,value.left,value.label,value.id.value.permission,value.tag_user_id);
             });
           }
 
@@ -204,10 +204,9 @@ var $ = jQuery.noConflict();
       }
 
       /*User Permission set here*/
-
       try {
             if(Drupal.settings.image_tag.user_permission == 'true') {
-              $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
+              $('<div style="width:'+options.defaultWidth+'px;height:'+options.defaultHeight+'px"class="jTagDrag"><div class="jTagSave"><div class="jTagInput"><input type="text" id="jTagLabel" name="jTagLabel"><input type="hidden" id="jTagId" name="jTagId"></div><div class="jTagSaveClose"></div><div class="jTagSaveBtn"></div><div style="clear:both"></div></div>').appendTo(overlay);
               overlay.addClass("jTagPngOverlay");
             }
       } 
@@ -220,8 +219,13 @@ var $ = jQuery.noConflict();
 
       $.getJSON("?q=all_users", function(data) {
         $("input#jTagLabel").autocomplete({
-            source: data,
-            minLength: 1
+          delay: 0,
+          source: data,
+          select: function(event, ui) {
+            $('input#jTagLabel').val(ui.item.value);
+            $('input#jTagId').val(ui.item.uid);
+            return false;
+          }
         });
       });
 
@@ -280,6 +284,7 @@ var $ = jQuery.noConflict();
       $(".jTagSaveBtn",container).click(function(){
 
         label = $("#jTagLabel",container).val();
+        userId = $("#jTagId",container).val();
         setTimeout(function () {
               $('div.jTagNoDeleteTag').removeClass('jTagNoDeleteTag').addClass('jTagDeleteTag');
             }, 200);
@@ -298,10 +303,10 @@ var $ = jQuery.noConflict();
         width = $(this).parent().parent().width();
         top_pos = $(this).parent().parent().attr('offsetTop');
         left = $(this).parent().parent().attr('offsetLeft');
-        tagobj = obj.addTag(width,height,top_pos,left,label);
+        tagobj = obj.addTag(width,height,top_pos,left,label,imageName,userId);
         
         if(options.save){
-          options.save(width,height,top_pos,left,label,tagobj,imageName);
+          options.save(width,height,top_pos,left,label,tagobj,imageName,userId);
         }
 
       });
@@ -345,12 +350,13 @@ var $ = jQuery.noConflict();
       jtagdrag.css({backgroundPosition: position(overlay)});
     },
 
-    addTag: function(width,height,top_pos,left,label,id,permission){
+    addTag: function(width,height,top_pos,left,label,id,permission,tag_user_id){
       var obj = $(this);
       var options = obj.data('options');
       var count = $(".jTagTag").length+1;
       var jTagDeleteTag = (permission == 'true') ? 'jTagDeleteTag' : 'jTagNoDeleteTag';
-      tag = $('<div class="jTagTag" id="tag'+count+'"style="width:'+width+'px;height:'+height+'px;top:'+top_pos+'px;left:'+left+'px;"><div style="width:100%;height:100%"><div class="'+ jTagDeleteTag +'"></div><div class="jTagArrow"></div><span>'+label+'</span></div></div>')
+      tag_user_id = ($("#jTagId",container).val()) ? $("#jTagId",container).val() : tag_user_id;
+      tag = $('<div class="jTagTag" id="tag'+count+'"style="width:'+width+'px;height:'+height+'px;top:'+top_pos+'px;left:'+left+'px;"><div style="width:100%;height:100%"><div class="'+ jTagDeleteTag +'"></div><div class="jTagArrow"></div><span><a href="/user/'+ tag_user_id +'">'+ label +'</a></span></div></div>')
             .appendTo(obj.prev());
 
       if(id){
@@ -367,7 +373,7 @@ var $ = jQuery.noConflict();
       }
 
       if(options.showLabels){
-        $("<label rel='tag"+count+"'>"+label+"</label>").insertBefore($(".jTagLabels div:last"));
+        $("<label rel='tag"+count+"'><a href='/user/"+tag_user_id+"'>"+label+"</a></label>").insertBefore($(".jTagLabels div:last"));
       }
 
       obj.hideDrag();

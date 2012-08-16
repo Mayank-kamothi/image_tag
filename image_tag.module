@@ -91,6 +91,7 @@ function image_tag_all() {
     foreach($relationships as $keys => $values) {
       $user_friend[] = $values->requestee->uid;
     }
+    //print_r($user_friend);
     $query = db_select('image_tag', 'it');
       $query->fields('it'); // SELECT the fields from file_usage
       $query->condition('it.tag_nid', $nid, '=');
@@ -106,9 +107,10 @@ function image_tag_all() {
                       "width" => $record['tag_width'],
                       "height" => $record['tag_height'],
                       "top" => $record['tag_top'],
-                      "left" => $record['tag_left']);
+                      "left" => $record['tag_left'],
+                      "tag_user_id" => $record['taged_user_id']);
           if (in_array($record['tag_user_id'], $user_friend)) {
-            $tags[$j]['permission'] = 'true';
+              $tags[$j]['permission'] = 'true';
           }
           else {
             $tags[$j]['permission'] = 'false';
@@ -148,6 +150,7 @@ function image_tag_save() {
       'tag_nid' => $nid,
       'tag_fid' => $fid,
       'tag_label' => $_REQUEST['label'],
+      'taged_user_id' => $_REQUEST['taged_user_id'],
     ))
     ->execute();
   }
@@ -172,7 +175,8 @@ function image_tag_users_all() {
   foreach($relationships as $keys => $values) {
     $tags[] = array(
                 'value' => $values->requestee->name,
-                'label' => $values->requestee->name
+                'label' => $values->requestee->name,
+                'uid' => $values->requestee->uid
                 );
   }
 

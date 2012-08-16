@@ -11,13 +11,12 @@ Drupal.behaviors.tagBehavior = {
    $("#edit-search-block-form--2").autocomplete("?q=all_users", {
     selectFirst: true
   });
-  
-  
+
   if($(".tag").length !=0)
   {
     $(".tag").tag({
     save:
-      function(width,height,top_pos,left,label,the_tag,imageName)
+      function(width,height,top_pos,left,label,the_tag,imageName,userId)
       {
         $.post("?q=image_tag",{
                 'action':'save',
@@ -26,13 +25,14 @@ Drupal.behaviors.tagBehavior = {
                   'top':top_pos,
                   'left':left,
                   'label':label,
-                  'imageName' : imageName
+                  'imageName' : imageName,
+                  'taged_user_id' : userId
                 },
                 function(id){
                   the_tag.setId(id);
             });
         },
-      remove: 
+      remove:
         function(id){
           $.post("?q=image_tag",{'action':'delete','id':id});
         }
@@ -41,7 +41,7 @@ Drupal.behaviors.tagBehavior = {
       var fileName = src[src.length - 1];
       $.getJSON("?q=image_tag_all&imageName=" + fileName,{'action':'list'},function(tags){
         $.each(tags, function(key,tag){
-            $(".tag").addTag(tag.width,tag.height,tag.top,tag.left,tag.label,tag.id,tag.permission);
+            $(".tag").addTag(tag.width, tag.height, tag.top, tag.left, tag.label,tag.id, tag.permission, tag.tag_user_id);
          });
       });
   }
