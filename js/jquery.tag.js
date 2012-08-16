@@ -66,7 +66,7 @@ var $ = jQuery.noConflict();
           container.delegate('.jTagTag','mouseenter',function(){
             if($(".jTagDrag",container).length==0){
               $(this).css("opacity",1);
-              
+
               if(options.canDelete){
                 $(".jTagDeleteTag",this).show();
                 $(".jTagArrow",this).show();
@@ -304,7 +304,7 @@ var $ = jQuery.noConflict();
         top_pos = $(this).parent().parent().attr('offsetTop');
         left = $(this).parent().parent().attr('offsetLeft');
         tagobj = obj.addTag(width,height,top_pos,left,label,imageName,userId);
-        
+
         if(options.save){
           options.save(width,height,top_pos,left,label,tagobj,imageName,userId);
         }

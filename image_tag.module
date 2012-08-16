@@ -16,10 +16,12 @@ function image_tag_init() {
   drupal_add_js(drupal_get_path('module', 'image_tag') . '/js/image_tag.js');
   drupal_add_css(drupal_get_path('module', 'image_tag') . '/css/jquery.tag.css');
   drupal_add_css(drupal_get_path('module', 'image_tag') . '/css/jquery-ui.custom.css');
+
   if (user_access('access image_tag')) {
     $permission_variable = array('user_permission' => 'true');
     drupal_add_js(array('image_tag' => $permission_variable), 'setting');
   }
+
   drupal_add_js(drupal_get_path('module', 'image_tag') . '/js/jquery.tag.js');
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', 'external');
 }
@@ -48,6 +50,7 @@ function image_tag_menu() {
   'access arguments' => array('access content'),
   'type' => MENU_CALLBACK,
   );
+
   return $items;
 }
 
@@ -78,7 +81,6 @@ function image_tag_all() {
 
   if ($_REQUEST['action'] == 'list') {
     $tags = array();
-
     $args = array('user' => $user->uid, 'approved' => TRUE);
 
     $options = array(
@@ -88,10 +90,11 @@ function image_tag_all() {
 
     $relationships = user_relationships_load($args, $options);
     $user_friend[] = $user->uid;
-    foreach($relationships as $keys => $values) {
+
+    foreach ($relationships as $keys => $values) {
       $user_friend[] = $values->requestee->uid;
     }
-    //print_r($user_friend);
+
     $query = db_select('image_tag', 'it');
       $query->fields('it'); // SELECT the fields from file_usage
       $query->condition('it.tag_nid', $nid, '=');
@@ -109,13 +112,15 @@ function image_tag_all() {
                       "top" => $record['tag_top'],
                       "left" => $record['tag_left'],
                       "tag_user_id" => $record['taged_user_id']);
+
           if (in_array($record['tag_user_id'], $user_friend)) {
               $tags[$j]['permission'] = 'true';
           }
           else {
             $tags[$j]['permission'] = 'false';
           }
-      $j+=1;
+
+        $j+=1;
       }
 
     echo json_encode($tags);
@@ -131,6 +136,7 @@ function image_tag_save() {
   $imageData = image_tag_image_nodeId_fid($_REQUEST['imageName']);
   $nid = $imageData['id'];
   $fid = $imageData['fid'];
+
   if ($_REQUEST['action'] == 'delete') {
     // Delete tag on image.
     $num_deleted = db_delete('image_tag')
@@ -161,9 +167,7 @@ function image_tag_save() {
  * @author Mayank-kamothi <mayank_it@yahoo.com>
  */
 function image_tag_users_all() {
-    global $user;
-  //$tags = array();
-
+  global $user;
   $args = array('user' => $user->uid, 'approved' => TRUE);
 
   $options = array(
@@ -172,7 +176,8 @@ function image_tag_users_all() {
   );
 
   $relationships = user_relationships_load($args, $options);
-  foreach($relationships as $keys => $values) {
+
+  foreach ($relationships as $keys => $values) {
     $tags[] = array(
                 'value' => $values->requestee->name,
                 'label' => $values->requestee->name,
